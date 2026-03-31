@@ -1,119 +1,153 @@
+/* style.css */
+
+/* Base & Tailwind Defaults */
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: #f4f7f6;
-    color: #333;
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh; /* Ensure footer stays at the bottom */
-    align-items: center;
-    justify-content: space-between;
+    font-family: 'Inter', sans-serif; /* A more modern sans-serif font */
+    color: var(--text-color, #333); /* Default text color */
+    background-color: var(--bg-color, #f8f8f8); /* Default background */
 }
 
-.container {
-    background-color: #ffffff;
-    padding: 30px;
-    border-radius: 10px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+/* Custom CSS Variables for Theming */
+:root {
+    --primary-color: #3b82f6; /* Default: blue-500 */
+    --primary-dark-color: #2563eb; /* Default: blue-600 */
+    --accent-color: #f59e0b; /* Default: yellow-500 */
+    --bg-color: #f8f8f8;
+    --card-bg-color: #ffffff;
+    --text-color: #333;
+    --light-text-color: #666;
+}
+
+body.theme-blue {
+    --primary-color: #3b82f6;
+    --primary-dark-color: #2563eb;
+    --accent-color: #f59e0b;
+}
+body.theme-green {
+    --primary-color: #10b981; /* green-500 */
+    --primary-dark-color: #059669; /* green-600 */
+    --accent-color: #8b5cf6; /* purple-500 */
+}
+body.theme-purple {
+    --primary-color: #8b5cf6; /* purple-500 */
+    --primary-dark-color: #7c3aed; /* purple-600 */
+    --accent-color: #f97316; /* orange-500 */
+}
+body.theme-yellow {
+    --primary-color: #f59e0b; /* yellow-500 */
+    --primary-dark-color: #d97706; /* yellow-600 */
+    --accent-color: #3b82f6; /* blue-500 */
+}
+body.theme-red {
+    --primary-color: #ef4444; /* red-500 */
+    --primary-dark-color: #dc2626; /* red-600 */
+    --accent-color: #f59e0b; /* yellow-500 */
+}
+body.theme-gray {
+    --primary-color: #6b7280; /* gray-500 */
+    --primary-dark-color: #4b5563; /* gray-600 */
+    --accent-color: #f59e0b; /* yellow-500 */
+}
+
+
+/* Apply theme colors to elements */
+.bg-blue-600 { background-color: var(--primary-dark-color); }
+.bg-blue-500 { background-color: var(--primary-color); }
+.hover\:bg-blue-800:hover { background-color: var(--primary-dark-color); }
+.focus\:ring-blue-500:focus { --tw-ring-color: var(--primary-color); }
+.text-blue-600 { color: var(--primary-dark-color); }
+.border-blue-500 { border-color: var(--primary-color); }
+
+/* Buttons */
+.nav-btn {
+    flex: 1;
+    padding: 10px 0;
     text-align: center;
-    max-width: 500px;
-    width: 90%;
-    margin-top: 50px;
-    margin-bottom: 20px;
+    font-weight: 600;
+    color: var(--light-text-color);
+    border-radius: 8px;
+    transition: all 0.2s ease-in-out;
 }
 
-h1 {
-    color: #007bff;
-    margin-bottom: 25px;
-    font-size: 1.8em;
+.nav-btn:hover {
+    background-color: var(--bg-color);
+    color: var(--primary-color);
 }
 
-h2 {
-    color: #555;
-    margin-top: 30px;
-    margin-bottom: 15px;
-    font-size: 1.4em;
-    border-bottom: 1px solid #eee;
-    padding-bottom: 10px;
-}
-
-.referral-section label {
-    display: block;
-    margin-bottom: 10px;
-    font-weight: bold;
-    color: #444;
-}
-
-.referral-section input[type="text"] {
-    width: calc(100% - 22px); /* Account for padding and border */
-    padding: 10px;
-    margin-bottom: 15px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    font-size: 1em;
-    text-align: center;
-    text-transform: uppercase; /* Suggest users to enter uppercase */
-}
-
-.referral-section button {
-    background-color: #28a745; /* Green for apply */
+.nav-btn.active {
+    background-color: var(--primary-color);
     color: white;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
+    box-shadow: 0 4px 10px rgba(var(--primary-color-rgb, 59, 130, 246), 0.3);
+}
+
+/* Sections */
+.app-section {
+    opacity: 0;
+    transform: translateX(100%);    transition: opacity 0.3s ease-out, transform 0.3s ease-out;
+    position: absolute;
+    width: calc(100% - 32px); /* Full width minus padding */
+    max-width: 640px; /* max-w-xl */
+    left: 16px; /* p-4 */
+    right: 16px;
+}
+
+.app-section.active-section {
+    opacity: 1;
+    transform: translateX(0);
+    position: relative;
+    z-index: 0; /* Ensure active section is on top */
+}
+
+/* Theme Picker */
+.theme-color-option {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 2px solid transparent;
     cursor: pointer;
-    font-size: 1em;
-    transition: background-color 0.3s ease;
+    transition: border-color 0.2s;
 }
 
-.referral-section button:hover {
-    background-color: #218838;
+.theme-color-option.selected {
+    border-color: var(--primary-dark-color);
+    box-shadow: 0 0 0 3px var(--primary-color);
 }
 
-.message {
-    margin-top: 15px;
-    padding: 10px;
-    border-radius: 5px;
-    font-weight: bold;
-    display: none; /* Hidden by default, shown by JS */
+/* Specific button colors (can be themed too if needed) */
+#premiumAds1Btn { background-color: var(--accent-color); color: #333; }
+#premiumAds1Btn:hover { background-color: color-mix(in srgb, var(--accent-color) 90%, black); }
+
+#turboAds2Btn { background-color: #ef4444; } /* red-500 */
+#turboAds2Btn:hover { background-color: #dc2626; } /* red-600 */
+
+#claimRewardBtn { background-color: #22c55e; } /* green-500 */
+#claimRewardBtn:hover { background-color: #16a34a; } /* green-600 */
+
+#adminLoginBtn { background-color: #a855f7; } /* purple-500 */
+#adminLoginBtn:hover { background-color: #9333ea; } /* purple-600 */
+
+.withdrawal-item, .user-item {
+    background-color: #fefefe;
+    border: 1px solid #eee;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
 }
 
-.message.success {
-    background-color: #d4edda;
-    color: #155724;
-    border: 1px solid #c3e6cb;
-}
+.withdrawal-item.pending { border-left: 4px solid #f59e0b; /* yellow */ }
+.withdrawal-item.approved { border-left: 4px solid #22c55e; /* green */ }
+.withdrawal-item.denied { border-left: 4px solid #ef4444; /* red */ }
 
-.message.error {
-    background-color: #f8d7da;
-    color: #721c24;
-    border: 1px solid #f5c6cb;
-}
+/* General overrides for Tailwind components to use CSS variables */
+.bg-white { background-color: var(--card-bg-color); }
+.text-gray-700 { color: var(--text-color); }
+.text-gray-600 { color: var(--light-text-color); }
+.text-gray-500 { color: var(--light-text-color); }
 
-.stats-section p {
-    font-size: 1.1em;
-    margin-bottom: 8px;
-    color: #555;
-}
-
-.stats-section span {
-    font-weight: bold;
-    color: #007bff;
-    font-size: 1.2em;
-}
-
-footer {
-    width: 100%;
-    background-color: #343a40;
-    color: #f8f9fa;
-    text-align: center;
-    padding: 15px 0;
-    font-size: 0.9em;
-    margin-top: auto; /* Push footer to the bottom */
-}
-
-footer #currentDateTime {
-    font-weight: bold;
-    color: #ffffff;
+/* Ensure main content doesn't overflow */
+main {
+    position: relative;
+    min-height: 500px; /* Minimum height to avoid collapse */
+    display: flex; /* For sections to position correctly */
+    flex-direction: column;
 }
