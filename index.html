@@ -8,156 +8,168 @@
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
+    <!-- Ad SDKs -->
+    <script src='//libtl.com/sdk.js' data-zone='10555663' data-sdk='show_10555663'></script>
+    <script src='//libtl.com/sdk.js' data-zone='10555746' data-sdk='show_10555746'></script>
+    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        body { transition: background-color 0.3s, color 0.3s; }
-        .sidebar { transition: transform 0.3s ease-in-out; transform: translateX(-100%); }
+        body { transition: background 0.3s; overflow-x: hidden; }
+        .sidebar { transition: 0.3s; transform: translateX(-100%); z-index: 100; }
         .sidebar.active { transform: translateX(0); }
-        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 50; align-items: center; justify-content: center; }
+        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 200; align-items: center; justify-content: center; }
         .modal.active { display: flex; }
+        .glass { background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px); }
     </style>
 </head>
-<body class="bg-gray-900 text-white font-sans">
+<body class="bg-slate-900 text-white min-h-screen">
 
-    <!-- Sidebar Overlay -->
-    <div id="sidebarOverlay" class="fixed inset-0 bg-black opacity-50 hidden z-40" onclick="toggleMenu()"></div>
-
-    <!-- Sliding Menu -->
-    <div id="sidebar" class="sidebar fixed top-0 left-0 h-full w-64 bg-gray-800 z-50 p-5 shadow-2xl">
-        <h2 class="text-xl font-bold mb-6 border-b border-gray-700 pb-2">Menu</h2>
+    <!-- Sidebar Menu -->
+    <div id="sidebar" class="sidebar fixed top-0 left-0 h-full w-64 bg-slate-800 p-5 shadow-2xl">
+        <div class="flex justify-between items-center mb-8">
+            <h2 class="font-black text-blue-400">PAPERHOUSE</h2>
+            <button onclick="toggleMenu()"><i class="fas fa-times"></i></button>
+        </div>
         <nav class="space-y-4">
-            <a href="#" onclick="showSection('home')" class="block py-2 hover:text-blue-400"><i class="fas fa-home mr-2"></i> Dashboard</a>
-            <a href="#" onclick="showSection('withdraw')" class="block py-2 hover:text-blue-400"><i class="fas fa-wallet mr-2"></i> Withdrawal</a>
-            <a href="#" onclick="showSection('referral')" class="block py-2 hover:text-blue-400"><i class="fas fa-users mr-2"></i> Referrals</a>
-            <a href="#" onclick="showSection('settings')" class="block py-2 hover:text-blue-400"><i class="fas fa-cog mr-2"></i> Settings</a>
-            <a href="#" onclick="openAdmin()" class="block py-2 hover:text-red-400"><i class="fas fa-user-shield mr-2"></i> Admin</a>
+            <button onclick="showSection('home')" class="w-full text-left p-3 hover:bg-slate-700 rounded-lg"><i class="fas fa-home mr-3"></i> Dashboard</button>
+            <button onclick="showSection('withdraw')" class="w-full text-left p-3 hover:bg-slate-700 rounded-lg"><i class="fas fa-wallet mr-3"></i> Withdrawal</button>
+            <button onclick="showSection('referral')" class="w-full text-left p-3 hover:bg-slate-700 rounded-lg"><i class="fas fa-users mr-3"></i> Referrals</button>
+            <button onclick="showSection('settings')" class="w-full text-left p-3 hover:bg-slate-700 rounded-lg"><i class="fas fa-palette mr-3"></i> Appearance</button>
+            <hr class="border-slate-700">            <button onclick="openAdmin()" class="w-full text-left p-3 text-red-400"><i class="fas fa-lock mr-3"></i> Admin Panel</button>
         </nav>
     </div>
 
     <!-- Header -->
-    <header class="p-4 bg-gray-800 flex justify-between items-center shadow-md">
-        <button onclick="toggleMenu()" class="text-2xl"><i class="fas fa-bars"></i></button>
-
-        <h1 class="text-lg font-black tracking-widest text-blue-500">PAPERHOUSE CORPORATION</h1>
-        <div id="tg-username" class="text-sm font-semibold bg-blue-600 px-3 py-1 rounded-full text-white">Guest</div>
+    <header class="p-4 glass sticky top-0 flex justify-between items-center border-b border-white/10">
+        <button onclick="toggleMenu()" class="text-xl"><i class="fas fa-bars"></i></button>
+        <span class="font-black tracking-tighter text-lg">PAPERHOUSE CORP</span>
+        <div id="tg-username" class="bg-blue-600 px-3 py-1 rounded-full text-xs font-bold">@Loading...</div>
     </header>
 
-    <main class="p-4 mb-20">
-        <!-- Dashboard Section -->
+    <main class="p-4 pb-24">
+        <!-- Dashboard -->
         <section id="section-home">
-            <div class="bg-gray-800 p-6 rounded-2xl shadow-lg mb-6 text-center">
-                <p class="text-gray-400 text-sm">Main Balance</p>
-                <h2 class="text-4xl font-bold text-green-400" id="user-balance">0.00000 USDT</h2>
-                <div class="mt-4 flex justify-around text-xs text-gray-400">
-                    <span>Online: <b id="online-users">0</b></span>
-                    <span>Total Users: <b id="total-users">0</b></span>
+            <div class="bg-gradient-to-br from-blue-600 to-indigo-800 p-6 rounded-3xl shadow-xl mb-6">
+                <p class="text-blue-100 text-sm opacity-80">Available Balance</p>
+                <h1 class="text-4xl font-bold mt-1" id="balance">0.00000 <span class="text-lg opacity-50">USDT</span></h1>
+                <div class="flex justify-between mt-6 text-[10px] uppercase tracking-widest opacity-70">
+                    <div>Users: <span id="total-users">0</span></div>
+                    <div>Online: <span id="online-users">0</span></div>
                 </div>
             </div>
 
             <div class="grid grid-cols-1 gap-4">
-                <button onclick="startAdTask('PREMIUM ADS 1')" class="bg-gradient-to-r from-blue-600 to-blue-800 p-4 rounded-xl font-bold flex justify-between items-center">
-                    <span><i class="fas fa-play-circle mr-2"></i> PREMIUM ADS 1</span>
-                    <span class="text-xs opacity-75">0.00014 USDT</span>
+                <button onclick="handleAdClick('PREMIUM ADS 1')" class="bg-slate-800 p-5 rounded-2xl border border-white/5 flex justify-between items-center active:scale-95 transition">
+                    <div class="flex items-center">
+                        <div class="w-12 h-12 bg-blue-500/20 rounded-full flex items-center justify-center mr-4">
+                            <i class="fas fa-star text-blue-400"></i>
+                        </div>
+                        <div class="text-left">
+                            <div class="font-bold">PREMIUM ADS 1</div>
+                            <div class="text-xs text-green-400">0.00014 USDT</div>
+                        </div>
+                    </div>
+                    <i class="fas fa-chevron-right opacity-30"></i>
                 </button>
-                <button onclick="startAdTask('TURBO ADS 2')" class="bg-gradient-to-r from-purple-600 to-purple-800 p-4 rounded-xl font-bold flex justify-between items-center">
-                    <span><i class="fas fa-bolt mr-2"></i> TURBO ADS 2</span>
-                    <span class="text-xs opacity-75">0.00014 USDT</span>
+                <button onclick="handleAdClick('TURBO ADS 2')" class="bg-slate-800 p-5 rounded-2xl border border-white/5 flex justify-between items-center active:scale-95 transition">
+                    <div class="flex items-center">
+                        <div class="w-12 h-12 bg-purple-500/20 rounded-full flex items-center justify-center mr-4">
+                            <i class="fas fa-bolt text-purple-400"></i>
+                        </div>
+                        <div class="text-left">
+                            <div class="font-bold">TURBO ADS 2</div>
+                            <div class="text-xs text-green-400">0.00014 USDT</div>
+                        </div>
+                    </div>
+                    <i class="fas fa-chevron-right opacity-30"></i>
                 </button>
             </div>
-            
-            <div id="stats-summary" class="mt-6 text-xs text-gray-500 text-center">
-                Total Paid: <span id="total-paid">0.00</span> USDT
+
+            <div class="mt-8 text-center text-xs text-slate-500">
+                Total Paid to Users: <span id="total-income">0.00</span> USDT
             </div>
         </section>
 
-        <!-- Withdrawal Section -->
+        <!-- Withdrawal -->
         <section id="section-withdraw" class="hidden">
-            <h3 class="text-xl font-bold mb-4">Withdraw Funds</h3>
-            <div class="bg-gray-800 p-4 rounded-xl mb-4">
-                <label class="block text-sm mb-1">Select Method</label>
-                <select id="wd-method" class="w-full bg-gray-700 p-2 rounded mb-3">
+            <h2 class="text-xl font-bold mb-4">Withdraw</h2>
+            <div class="bg-slate-800 p-5 rounded-2xl space-y-4">
+                <select id="wd-method" class="w-full bg-slate-700 p-3 rounded-xl outline-none">
                     <option value="GCash">GCash</option>
                     <option value="FaucetPay">FaucetPay</option>
                     <option value="PayPal">PayPal</option>
                 </select>
-                <input type="text" id="wd-address" placeholder="Address / Phone Number" class="w-full bg-gray-700 p-2 rounded mb-3">
-                <input type="number" id="wd-amount" placeholder="Amount (Min 0.02)" class="w-full bg-gray-700 p-2 rounded mb-4">
-                <button onclick="requestWithdrawal()" class="w-full bg-green-600 p-3 rounded-xl font-bold">Withdraw Now</button>
+                <input type="text" id="wd-address" placeholder="Account Address/Phone" class="w-full bg-slate-700 p-3 rounded-xl">
+                <input type="number" id="wd-amount" placeholder="Amount (Min 0.02)" class="w-full bg-slate-700 p-3 rounded-xl">
+                <button onclick="submitWithdraw()" class="w-full bg-green-600 font-bold p-3 rounded-xl">Confirm Withdrawal</button>
             </div>
-            <h4 class="font-bold mb-2">History</h4>
-            <div id="wd-history" class="space-y-2 text-sm"></div>
+            <div id="wd-history" class="mt-6 space-y-2"></div>
         </section>
 
-        <!-- Referral Section -->
-        <section id="section-referral" class="hidden">
-            <h3 class="text-xl font-bold mb-4">Referral Program</h3>
-            <div class="bg-blue-900/30 p-4 border border-blue-500 rounded-xl mb-4">
-                <p class="text-sm">Earn 12% bonus from your friends' earnings.</p>
-                <div class="mt-4">
-                    <p class="text-xs text-gray-400">Your Referral Code:</p>
-                    <div class="flex gap-2">
-                        <input type="text" id="my-ref-code" readonly class="bg-gray-700 p-2 rounded w-full font-mono">
-                    </div>
+        <!-- Referral -->
+        <section id="section-referral" class="hidden text-center">
+            <div class="bg-blue-600/10 border border-blue-500/30 p-6 rounded-3xl mb-6">
+                <i class="fas fa-gift text-4xl text-blue-500 mb-2"></i>
+                <h2 class="text-xl font-bold">12% Referral Bonus</h2>
+                <p class="text-sm text-slate-400">Share your code and earn from every ad your friends watch.</p>
+                <div class="mt-4 bg-slate-900 p-3 rounded-xl font-mono text-xl tracking-widest" id="my-code">------</div>
+            </div>
+            <div class="bg-slate-800 p-5 rounded-2xl">
+                <input type="text" id="input-ref" placeholder="Enter Invite Code" class="w-full bg-slate-700 p-3 rounded-xl mb-2 text-center">
+                <button onclick="claimReferral()" class="w-full bg-blue-600 p-3 rounded-xl font-bold">Activate Referral</button>
+            </div>
+            <div class="grid grid-cols-2 gap-4 mt-6">
+                <div class="bg-slate-800 p-4 rounded-2xl">
+                    <div class="text-xs opacity-50">FRIENDS</div>
+                    <div id="total-refs" class="text-xl font-bold">0</div>
+                </div>
+                <div class="bg-slate-800 p-4 rounded-2xl">
+                    <div class="text-xs opacity-50">EARNED</div>
+                    <div id="ref-earned" class="text-xl font-bold">0.00</div>
                 </div>
             </div>
-            <div class="bg-gray-800 p-4 rounded
-
--xl">
-                <p class="text-sm mb-2">Enter Invite Code:</p>
-                <input type="text" id="input-ref-code" class="w-full bg-gray-700 p-2 rounded mb-2" placeholder="6 Character Code">
-                <button onclick="applyReferral()" class="w-full bg-blue-600 p-2 rounded">Submit</button>
-            </div>
-            <div class="mt-4 text-center">
-                <p>Total Referrals: <span id="total-refs">0</span></p>
-                <p>Total Ref Earned: <span id="total-ref-earned">0.00</span> USDT</p>
-            </div>
         </section>
 
-        <!-- Settings Section -->
-        <section id="section-settings" class="hidden text-center">
-            <h3 class="text-xl font-bold mb-4">Theme Settings</h3>
-            <div class="grid grid-cols-3 gap-4">
-                <button onclick="changeColor('#111827')" class="h-10 bg-gray-900 rounded border border-white"></button>
-                <button onclick="changeColor('#1e3a8a')" class="h-10 bg-blue-900 rounded"></button>
-                <button onclick="changeColor('#312e81')" class="h-10 bg-indigo-900 rounded"></button>
-                <button onclick="changeColor('#064e3b')" class="h-10 bg-emerald-900 rounded"></button>
-                <button onclick="changeColor('#4c1d95')" class="h-10 bg-purple-900 rounded"></button>
-                <button onclick="changeColor('#000000')" class="h-10 bg-black rounded"></button>
-            </div>
-        </section>
-
-        <!-- Admin Section -->
+        <!-- Admin -->
         <section id="section-admin" class="hidden">
-            <h3 class="text-xl font-bold mb-4 text-red-500">Admin Dashboard</h3>
-            <div id="admin-withdrawals" class="space-y-4">
-                <!-- Admin items loaded here -->
+            <h2 class="text-xl font-bold text-red-500 mb-4">Pending Requests</h2>
+            <div id="admin-list" class="space-y-4"></div>
+        </section>
+
+        <!-- Settings -->
+        <section id="section-settings" class="hidden">
+            <h2 class="text-xl font-bold mb-4">Background Color</h2>
+            <div class="grid grid-cols-4 gap-4">
+                <button onclick="setTheme('#0f172a')" class="h-12 bg-slate-900 rounded-lg border border-white/20"></button>
+                <button onclick="setTheme('#1e1b4b')" class="h-12 bg-indigo-950 rounded-lg"></button>
+                <button onclick="setTheme('#164e63')" class="h-12 bg-cyan-950 rounded-lg"></button>
+                <button onclick="setTheme('#022c22')" class="h-12 bg-emerald-950 rounded-lg"></button>
+                <button onclick="setTheme('#450a0a')" class="h-12 bg-red-950 rounded-lg"></button>
+                <button onclick="setTheme('#000000')" class="h-12 bg-black rounded-lg"></button>
             </div>
         </section>
     </main>
 
-    <!-- Ad Timer Modal -->
+    <!-- Ad Modal -->
     <div id="ad-modal" class="modal">
-        <div class="bg-gray-800 p-8 rounded-2xl text-center max-w-xs w-full mx-4">
-            <h2 class="text-xl font-bold mb-4">Watching Ad...</h2>
-            <div class="relative w-24 h-24 mx-auto mb-4">
+        <div class="text-center">
+            <div class="relative w-32 h-32 mx-auto mb-6">
                 <svg class="w-full h-full transform -rotate-90">
-                    <circle cx="48" cy="48" r="40" stroke="currentColor" stroke-width="8" fill="transparent" class="text-gray-700" />
-                    <circle id="timer-circle" cx="48" cy="48" r="40" stroke="currentColor" stroke-width="8" fill="transparent" class="text-blue-500" stroke-dasharray="251.2" stroke-dashoffset="0" />
+                    <circle cx="64" cy="64" r="60" stroke="currentColor" stroke-width="8" fill="transparent" class="text-slate-700" />
+                    <circle id="timer-bar" cx="64" cy="64" r="60" stroke="currentColor" stroke-width="8" fill="transparent" class="text-blue-500" stroke-dasharray="377" stroke-dashoffset="377" style="transition: stroke-dashoffset 1s linear;" />
                 </svg>
-                <div id="timer-text" class="absolute inset-0 flex items-center justify-center text-2xl font-bold">20</div>
+                <div id="timer-text" class="absolute inset-0 flex items-center justify-center text-3xl font-bold">20</div>
             </div>
-            <p class="text-sm text-gray-400">Keep the window open to receive rewards!</p>
+            <p class="text-slate-400 animate-pulse">Watching Advertisement...</p>
         </div>
     </div>
 
     <!-- Footer -->
-    <footer class="fixed bottom-0 w-full bg-gray-800 p-3 text-center text-[10px] text-gray-500 border-t border-gray-700">
-        <div id="footer-date"></div>
-        <div class="mt-1">PAPERHOUSE CORPORATION &copy; 2024</div>
+    <footer class="fixed bottom-0 w-full p-4 glass border-t border-white/5 text-[10px] text-center text-slate-500">
+        <div id="live-clock">--:--:--</div>
+        <div class="mt-1 font-bold">PAPERHOUSE CORPORATION &copy; 2026</div>
     </footer>
 
-    <!-- Scripts -->
-    <audio id="reward-sound" src="https://assets.mixkit.co/active_storage/sfx/2000/2000-preview.mp3"></audio>
     <script src="app.js"></script>
 </body>
 </html>
