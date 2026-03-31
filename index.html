@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Referral Bonus System</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Referral Bonus System</h1>
+
+        <div class="referral-section">
+            <label for="referralCodeInput">Enter 6-Character Referral Code:</label>
+            <input type="text" id="referralCodeInput" placeholder="e.g., BONUS1" maxlength="6">
+            <button id="applyReferralButton">Apply Referral</button>
+            <p id="referralStatus" class="message"></p>
+        </div>
+
+        <div class="stats-section">
+            <h2>Your Referral Stats</h2>
+            <p>Total Referrals: <span id="totalReferrals">0</span></p>
+            <p>Total Earned (with bonus): $<span id="totalEarned">0.00</span></p>
+        </div>
+    </div>
+
+    <footer>
+        <p>Current Time and Date: <span id="currentDateTime"></span></p>
+    </footer>
+
+    <script src="app.js"></script>
+</body>
+</html>
