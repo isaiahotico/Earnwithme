@@ -8,22 +8,10 @@
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
-    <!-- Ad SDKs -->
+    <!-- Libtl Ad SDKs - MUST be in head or before app.js -->
     <script src='//libtl.com/sdk.js' data-zone='10555663' data-sdk='show_10555663'></script>
     <script src='//libtl.com/sdk.js' data-zone='10555746' data-sdk='show_10555746'></script>
-    <script src="https://pl28917645.effectivegatecpm.com/3a/6c/94/3a6c94eafdbe1b9ca34a971e7e5a12dd.js"></script>
-    </style><script>(function(s){s.dataset.zone='10601128',s.src='https://nap5k.com/tag.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script>
-  <script>(function(s){s.dataset.zone='10601128',s.src='https://nap5k.com/tag.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script><script>(function(s){s.dataset.zone='10601128',s.src='https://nap5k.com/tag.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script>
-    <script>(function(s){s.dataset.zone='10109465',s.src='https://groleegni.net/vignette.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script>
-    <script>(function(s){s.dataset.zone='10800165',s.src='https://n6wxm.com/vignette.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script>
-  
-
-<!-- News/Update Ticker -->
-            <div class="bg-blue-600/20 border border-blue-500/30 p-3 rounded-xl mb-6 flex items-center gap-3">
-                <i class="fa fa-bullhorn text-blue-400 animate-bounce"></i>
-                <marquee class="text-[10px] font-bold uppercase tracking-wider">Welcome to Our EARNING PLATFORM! Minimum withdrawal is 0.02 USDT.PLEASE INVITE MORE EVERYONE,IT MAKES YOUR EARNINGS BE ON SCHEDULE ON OUR WITHDRAWAL LISTS!Take care always! </marquee>
-            </div>
-        </div> 
+    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         body { transition: background 0.3s; overflow-x: hidden; }
@@ -40,14 +28,14 @@
     <div id="sidebar" class="sidebar fixed top-0 left-0 h-full w-64 bg-slate-800 p-5 shadow-2xl">
         <div class="flex justify-between items-center mb-8">
             <h2 class="font-black text-blue-400">PAPERHOUSE</h2>
-            <button onclick="toggleMenu()"><i class="fas fa-times"></i></button>
+            <button onclick="toggleMenu()" class="text-xl"><i class="fas fa-times"></i></button>
         </div>
         <nav class="space-y-4">
             <button onclick="showSection('home')" class="w-full text-left p-3 hover:bg-slate-700 rounded-lg"><i class="fas fa-home mr-3"></i> Dashboard</button>
             <button onclick="showSection('withdraw')" class="w-full text-left p-3 hover:bg-slate-700 rounded-lg"><i class="fas fa-wallet mr-3"></i> Withdrawal</button>
             <button onclick="showSection('referral')" class="w-full text-left p-3 hover:bg-slate-700 rounded-lg"><i class="fas fa-users mr-3"></i> Referrals</button>
-            <button onclick="showSection('settings')" class="w-full text-left p-3 hover:bg-slate-700 rounded-lg"><i class="fas fa-palette mr-3"></i> Appearance</button>
-            <hr class="border-slate-700">            <button onclick="openAdmin()" class="w-full text-left p-3 text-red-400"><i class="fas fa-lock mr-3"></i> Admin Panel</button>
+            <button onclick="showSection('settings')" class="w-full text-left p-3 hover:bg-slate-700 rounded-lg"><i class="fas fa-palette mr-3"></i> Appearance</button>            <hr class="border-slate-700">
+            <button onclick="openAdmin()" class="w-full text-left p-3 text-red-400"><i class="fas fa-lock mr-3"></i> Admin Panel</button>
         </nav>
     </div>
 
@@ -106,13 +94,13 @@
         <section id="section-withdraw" class="hidden">
             <h2 class="text-xl font-bold mb-4">Withdraw</h2>
             <div class="bg-slate-800 p-5 rounded-2xl space-y-4">
-                <select id="wd-method" class="w-full bg-slate-700 p-3 rounded-xl outline-none">
+                <select id="wd-method" class="w-full bg-slate-700 p-3 rounded-xl outline-none text-white">
                     <option value="GCash">GCash</option>
                     <option value="FaucetPay">FaucetPay</option>
                     <option value="PayPal">PayPal</option>
                 </select>
-                <input type="text" id="wd-address" placeholder="Account Address/Phone" class="w-full bg-slate-700 p-3 rounded-xl">
-                <input type="number" id="wd-amount" placeholder="Amount (Min 0.02)" class="w-full bg-slate-700 p-3 rounded-xl">
+                <input type="text" id="wd-address" placeholder="Account Address/Phone" class="w-full bg-slate-700 p-3 rounded-xl text-white">
+                <input type="number" id="wd-amount" placeholder="Amount (Min 0.02)" class="w-full bg-slate-700 p-3 rounded-xl text-white">
                 <button onclick="submitWithdraw()" class="w-full bg-green-600 font-bold p-3 rounded-xl">Confirm Withdrawal</button>
             </div>
             <div id="wd-history" class="mt-6 space-y-2"></div>
@@ -127,7 +115,7 @@
                 <div class="mt-4 bg-slate-900 p-3 rounded-xl font-mono text-xl tracking-widest" id="my-code">------</div>
             </div>
             <div class="bg-slate-800 p-5 rounded-2xl">
-                <input type="text" id="input-ref" placeholder="Enter Invite Code" class="w-full bg-slate-700 p-3 rounded-xl mb-2 text-center">
+                <input type="text" id="input-ref" placeholder="Enter Invite Code" class="w-full bg-slate-700 p-3 rounded-xl mb-2 text-center text-white">
                 <button onclick="claimReferral()" class="w-full bg-blue-600 p-3 rounded-xl font-bold">Activate Referral</button>
             </div>
             <div class="grid grid-cols-2 gap-4 mt-6">
@@ -158,6 +146,7 @@
                 <button onclick="setTheme('#022c22')" class="h-12 bg-emerald-950 rounded-lg"></button>
                 <button onclick="setTheme('#450a0a')" class="h-12 bg-red-950 rounded-lg"></button>
                 <button onclick="setTheme('#000000')" class="h-12 bg-black rounded-lg"></button>
+                <!-- Add more color options here if desired -->
             </div>
         </section>
     </main>
@@ -170,7 +159,7 @@
                     <circle cx="64" cy="64" r="60" stroke="currentColor" stroke-width="8" fill="transparent" class="text-slate-700" />
                     <circle id="timer-bar" cx="64" cy="64" r="60" stroke="currentColor" stroke-width="8" fill="transparent" class="text-blue-500" stroke-dasharray="377" stroke-dashoffset="377" style="transition: stroke-dashoffset 1s linear;" />
                 </svg>
-                <div id="timer-text" class="absolute inset-0 flex items-center justify-center text-3xl font-bold">20</div>
+                <div id="timer-text" class="absolute inset-0 flex items-center justify-center text-3xl font-bold">10</div>
             </div>
             <p class="text-slate-400 animate-pulse">Watching Advertisement...</p>
         </div>
