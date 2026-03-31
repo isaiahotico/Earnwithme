@@ -3,141 +3,193 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PAPERHOUSE CORPORATION</title>
-    <!-- Tailwind CSS CDN -->
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
+    <title>EliteEarn | Best Earning Concept</title>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --secondary: #10b981;
+            --danger: #ef4444;
+            --dark: #1e293b;
+            --light: #f8fafc;
+        }
 
-    <!-- Firebase SDKs -->
-    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-database-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth-compat.js"></script>
-    
-    <!-- AdTerra SDKs (provided by user) -->
-    <!-- For rewarded ad 1 (show_10555663) -->
-    <script src='//libtl.com/sdk.js' data-zone='10555663' data-sdk='show_10555663'></script>
-    <!-- For rewarded ad 2 / In-App interstitial (show_10555746) -->
-    <script src='//libtl.com/sdk.js' data-zone='10555746' data-sdk='show_10555746'></script>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #f0f2f5;
+            margin: 0;
+            padding-bottom: 60px;
+        }
+
+        nav {
+            background: var(--dark);
+            color: white;
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+        }
+
+        .card {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        .balance-card {
+            background: linear-gradient(135deg, var(--primary), #1d4ed8);
+            color: white;
+            text-align: center;
+        }
+
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-success { background: var(--secondary); color: white; }
+        .btn-danger { background: var(--danger); color: white; }
+
+        input {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            width: 100%;
+            box-sizing: border-box;
+            margin-bottom: 10px;
+        }
+
+        .admin-section {
+            border-top: 4px solid var(--danger);
+            display: none; /* Hidden by default */
+        }
+
+        .request-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .stat-box {
+            background: #f1f5f9;
+            padding: 15px;
+
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        footer {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            background: var(--dark);
+            color: white;
+            text-align: center;
+            padding: 10px 0;
+            font-size: 0.9rem;
+        }
+
+        .banned-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.9);
+            color: white;
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+    </style>
 </head>
-<body class="bg-gray-100 min-h-screen flex flex-col font-sans">
+<body>
 
-    <header class="bg-blue-600 text-white p-4 shadow-md sticky top-0 z-10">
-        <div class="max-w-4xl mx-auto flex justify-between items-center">
-            <h1 class="text-2xl font-bold">PAPERHOUSE CORPORATION</h1>
-            <div class="flex items-center space-x-4">
-                <span id="telegramUsername" class="text-lg font-semibold">@User_123</span>
-                <button id="themePickerBtn" class="p-2 rounded-full bg-blue-700 hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                    🎨
-                </button>
-            </div>
+<div id="bannedScreen" class="banned-overlay">
+    <h1>ACCOUNT BANNED</h1>
+    <p>You have violated our terms of service.</p>
+</div>
+
+<nav>
+    <div style="font-size: 1.5rem; font-weight: bold;">EliteEarn</div>
+    <div>
+        <button onclick="switchView('user')" class="btn-primary">User View</button>
+        <button onclick="switchView('admin')" class="btn-danger">Admin Panel</button>
+    </div>
+</nav>
+
+<div class="container">
+    <!-- USER SECTION -->
+    <div id="userView">
+        <div class="card balance-card">
+            <p>Available Balance</p>
+            <h1 id="userBalance">$0.00</h1>
+            <button class="btn-success" onclick="requestWithdrawal()">Withdraw Funds</button>
         </div>
-    </header>
 
-    <main class="flex-grow max-w-4xl mx-auto w-full p-4">
-        <!-- Navigation Menu -->
-        <nav class="bg-white rounded-lg shadow-md mb-6 flex justify-around p-2">
-            <button class="nav-btn active" data-section="home">Home</button>
-            <button class="nav-btn" data-section="withdraw">Withdraw</button>
-            <button class="nav-btn" data-section="history">History</button>
-            <button class="nav-btn" data-section="admin">Admin</button>
-        </nav>
-
-        <!-- Home Section -->
-        <section id="home" class="app-section active-section">
-            <div class="bg-white p-6 rounded-lg shadow-md mb-6">
-                <h2 class="text-2xl font-semibold mb-4 text-center">Earn by Watching Ads</h2>                        <label for="withdrawAmount" class="block text-sm font-medium text-gray-700">Amount (USDT)</label>
-                        <input type="number" id="withdrawAmount" step="0.01" min="0.02" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-blue-500 focus:border-blue-500" required>
-                    </div>
-                    <div>
-                        <label for="withdrawMethod" class="block text-sm font-medium text-gray-700">Method</label>
-                        <select id="withdrawMethod" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-blue-500 focus:border-blue-500" required>
-                            <option value="">Select Method</option>
-                            <option value="gcash">GCash</option>
-                            <option value="faucetpay">FaucetPay</option>
-                            <option value="paypal">PayPal</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label for="contactInfo" class="block text-sm font-medium text-gray-700">GCash Number / FaucetPay Email / PayPal Email</label>
-                        <input type="text" id="contactInfo" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-blue-500 focus:border-blue-500" required>
-                    </div>
-                    <button type="submit" class="w-full bg-blue-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-blue-600 transition duration-300">Request Withdrawal</button>
-                </form>
-                <p id="withdrawStatus" class="mt-4 text-center"></p>
-            </div>
-        </section>
-
-        <!-- Withdrawal History Section -->
-        <section id="history" class="app-section hidden">
-            <div class="bg-white p-6 rounded-lg shadow-md mb-6">
-                <h2 class="text-2xl font-semibold mb-4 text-center">Withdrawal History</h2>
-                <div id="withdrawalHistoryList" class="space-y-3">
-                    <p class="text-gray-500 text-center">No withdrawal history yet.</p>
+        <div class="card">
+            <h3>Referral Program (12% Bonus)</h3>
+            <p>Your Referral Code: <strong id="myReferralCode">...</strong></p>
+            <input type="text" id="referralInput" placeholder="Enter 6-char referral code">
+            <button class="btn-primary" style="width: 100%" onclick="applyReferral()">Claim Bonus</button>
+            
+            <div class="stats-grid">
+                <div class="stat-box">
+                    <small>Total Referrals</small>
+                    <h3 id="totalReferrals">0</h3>
+                </div>
+                <div class="stat-box">
+                    <small>Total Earned</small>
+                    <h3 id="totalReferralEarnings">$0.00</h3>
                 </div>
             </div>
-        </section>
-
-        <!-- Admin Section -->
-        <section id="admin" class="app-section hidden">
-            <div class="bg-white p-6 rounded-lg shadow-md mb-6">
-                <h2 class="text-2xl font-semibold mb-4 text-center">Admin Panel</h2>
-                
-                <div id="adminLogin" class="mb-6">
-                    <label for="adminPassword" class="block text-sm font-medium text-gray-700 mb-2">Admin Password:</label>
-                    <input type="password" id="adminPassword" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-blue-500 focus:border-blue-500" required>
-                    <button id="adminLoginBtn" class="mt-3 w-full bg-purple-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-purple-600 transition duration-300">Login to Admin</button>
-                    <p id="adminLoginStatus" class="mt-2 text-red-500 text-center"></p>
-                </div>
-
-                <div id="adminContent" class="hidden">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-                        <div class="bg-gray-50 p-4 rounded-lg shadow-sm">
-                            <h3 class="font-semibold text-lg">Total Users</h3>
-                            <p id="totalRegisteredUsers" class="text-3xl font-bold text-blue-600">0</p>
-                        </div>
-                        <div class="bg-gray-50 p-4 rounded-lg shadow-sm">
-                            <h3 class="font-semibold text-lg">Online Users</h3>
-                            <p id="onlineUsersCount" class="text-3xl font-bold text-green-600">0</p>
-                        </div>
-                    </div>
-
-                    <h3 class="text-xl font-semibold mb-3">Pending Withdrawals</h3>
-                    <div id="pendingWithdrawalsList" class="space-y-4">
-                        <p class="text-gray-500 text-center">No pending requests.</p>
-                    </div>
-
-                    <h3 class="text-xl font-semibold mb-3 mt-6">All Users & Income</h3>
-                    <div id="allUsersList" class="space-y-4">
-                        <p class="text-gray-500 text-center">Loading users...</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-    </main>
-
-    <!-- Theme Picker Modal -->
-    <div id="themeModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-20">
-        <div class="bg-white p-6 rounded-lg shadow-xl w-80">
-            <h3 class="text-xl font-semibold mb-4 text-center">Pick Your Theme</h3>
-            <div class="grid grid-cols-3 gap-4">
-                <button class="theme-color-option bg-blue-500" data-color="blue"></button>
-                <button class="theme-color-option bg-green-500" data-color="green"></button>
-                <button class="theme-color-option bg-purple-500" data-color="purple"></button>
-                <button class="theme-color-option bg-yellow-500" data-color="yellow"></button>
-                <button class="theme-color-option bg-red-500" data-color="red"></button>
-                <button class="theme-color-option bg-gray-500" data-color="gray"></button>
-            </div>
-            <button id="closeThemeModalBtn" class="mt-6 w-full bg-gray-300 text-gray-800 py-2 rounded-lg hover:bg-gray-400">Close</button>
         </div>
     </div>
 
-    <!-- Ad Completion Sound (Optional: replace with your own sound file) -->
-    <audio id="adCompleteSound" src="https://assets.mixkit.co/sfx/preview/mixkit-positive-notification-alert-1699.mp3" preload="auto"></audio>
+    <!-- ADMIN SECTION -->
+    <div id="adminView" class="admin-section">
+        <h2>Admin Dashboard</h2>
+        
+        <div class="card">
+            <h3>Pending Withdrawals</h3>
+            <div id="withdrawalRequests">
+                <!-- Injected by JS -->
+            </div>
+        </div>
 
-    <footer class="bg-gray-800 text-white text-center p-4 mt-auto">
-        Current Time and Date: <span id="currentDateTime" class="font-semibold"></span>
-    </footer>
+        <div class="card">
+            <h3>User Management</h3>
+            <div id="userList">
+                <!-- Injected by JS -->
+            </div>
+        </div>
+    </div>
+</div>
 
-    <script src="app.js"></script>
+<footer>
+    <span id="footerDateTime"></span>
+</footer>
+
+<script src="app.js"></script>
 </body>
 </html>
